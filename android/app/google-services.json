@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "812229010081",
+    "project_id": "arcon-2023",
+    "storage_bucket": "arcon-2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812229010081:android:e1dd38aff08876075f06e0",
+        "android_client_info": {
+          "package_name": "com.arcon.arcon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "812229010081-0j6nhhaubqk8qn55v065rhu7650agknt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFgPu2A4zRSKjXxeMlGiYdT1a1EZkaOCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "812229010081-0j6nhhaubqk8qn55v065rhu7650agknt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
