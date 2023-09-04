@@ -9,6 +9,7 @@ class User {
       gender,
       institution,
       credentials;
+  late bool hasBeenValidated;
   late Map<String, dynamic> details;
 
   User({
@@ -20,6 +21,7 @@ class User {
     this.gender = "",
     this.institution = "",
     this.credentials = "",
+    this.hasBeenValidated = false,
     this.details = const {
       "resident": "",
       "area": "",
@@ -47,6 +49,7 @@ class User {
     gender = '';
     institution = '';
     credentials = '';
+    hasBeenValidated = false;
     details = {
       "resident": "",
       "area": "",
@@ -74,6 +77,7 @@ class User {
     gender = snapshot.get("gender") ?? "";
     institution = snapshot.get("institution") ?? "";
     credentials = snapshot.get("credentials") ?? "";
+    hasBeenValidated = snapshot.get("hasBeenValidated") ?? false;
     details = snapshot.get("details");
   }
 
@@ -87,6 +91,7 @@ class User {
       "gender" : gender,
       "institution" : institution,
       "credentials" : credentials,
+      "hasBeenValidated" : hasBeenValidated,
       "details" : details,
     };
   }
