@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: CustomColors.grey[2],
         body: LayoutBuilder(
@@ -421,7 +422,7 @@ class _HomeState extends State<Home> {
                 ),
                 onPressed: () {
                   if(isRegistered) {
-                    Get.toNamed(qrRoute);
+                    Get.toNamed('$qrRoute/${Get.find<UserController>().user.value.id}&&${Get.find<UserController>().user.value.email}');
                   } else {
                     Snack.show(
                         message: "Your need to complete your registration"

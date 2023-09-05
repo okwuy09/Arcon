@@ -32,20 +32,7 @@ class Auth {
 
   Future<void> signUp(String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-
-      User? user = result.user;
-      if(user != null){
-        try {
-          await user.sendEmailVerification();
-        } on FirebaseAuthException catch (e) {
-          errorMessage = e.toString().split('] ')[1];
-          if (kDebugMode) {
-            print(e.toString());
-          }
-        }
-      }
-
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       errorMessage = e.toString().split('] ')[1];
       if (kDebugMode) {

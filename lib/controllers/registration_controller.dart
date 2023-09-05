@@ -3,7 +3,6 @@ import 'package:image_picker_web/image_picker_web.dart';
 
 class RegistrationController extends GetxController{
 
-  //TODO fill values from user bio
   RxString phoneNumber = "".obs;
   RxString phoneNumberError = "".obs;
 

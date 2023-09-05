@@ -1,6 +1,7 @@
+import 'dart:html' as html;
+
 import 'package:arcon/app.dart';
 import 'package:arcon/config/config.dart';
-import 'package:arcon/controllers/controllers.dart';
 import 'package:arcon/pages/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,28 +17,21 @@ class ShowQr extends StatefulWidget {
 
 class _ShowQrState extends State<ShowQr> {
 
-  bool hasSentEmail = true;
+  late String userID;
+  late String userEmail;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final arguments = Get.arguments;
+    final fields = Get.currentRoute.split("/").last;
 
-      if(arguments != null){
-        hasSentEmail = arguments["hasSentEmail"] ?? true;
-      }
-
-      if(!hasSentEmail){
-
-      }
-    });
+    userID = fields.split("&&").first;
+    userEmail = fields.split("&&").last;
 
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       backgroundColor: CustomColors.primary[3],
         body: LayoutBuilder(
@@ -114,13 +108,9 @@ class _ShowQrState extends State<ShowQr> {
                             horizontal: qrSize * 0.05,
                             vertical: qrSize * 0.05
                           ),
-                          child: GetX<UserController>(
-                            builder: (controller) {
-                              return QrImageView(
-                                data: controller.user.value.id,
-                                size: qrSize * 0.9,
-                              );
-                            }
+                          child: QrImageView(
+                            data: userID,
+                            size: qrSize * 0.9,
                           ),
                         );
                       }
@@ -141,6 +131,32 @@ class _ShowQrState extends State<ShowQr> {
                       },
                     ),
 
+                    SizedBox(height: App.screenHeight * 0.02),
+
+                    CustomButton(
+                      text: "SEND TO EMAIL",
+                      margin: EdgeInsets.symmetric(
+                        horizontal: ResponsiveWidget.isLargeScreen()
+                            ? constraints.maxWidth * 0.25 : ResponsiveWidget.isMediumScreen()
+                            ? constraints.maxWidth * 0.2 : ResponsiveWidget.isSmallScreen()
+                            ? constraints.maxWidth * 0.15 : constraints.maxWidth * 0.1
+                      ),
+                      textColor: CustomColors.primary,
+                      borderColor: CustomColors.primary,
+                      color: Colors.white,
+                      onPressed: () async {
+                        html.WindowBase popup = html.window.open(
+                            'https://arcon-2023.web.app/full_qr/$userID&&$userEmail',
+                            "SEND QR",
+                            'left=100,top=100,width=800,height=600'
+                        );
+
+                        if (popup.closed!) {
+                          throw("Popups blocked");
+                        }
+                      },
+                    ),
+
                     SizedBox(
                       width: double.infinity,
                       height: App.screenHeight * 0.1,
@@ -154,4 +170,6 @@ class _ShowQrState extends State<ShowQr> {
         )
     );
   }
+
+
 }

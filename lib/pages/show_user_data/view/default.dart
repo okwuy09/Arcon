@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+
 import 'package:arcon/app.dart';
 import 'package:arcon/config/config.dart';
 import 'package:arcon/logic/models/models.dart';
@@ -305,7 +307,18 @@ class ShowUserData extends StatelessWidget {
             await UserDatabase(user.id).updateUserDetails(user.toJson());
             App.stopLoading();
 
+            html.WindowBase popup = html.window.open(
+                'https://arcon-2023.web.app/full_qr/${user.id}&&${user.email}',
+                "SEND QR",
+                'left=100,top=100,width=800,height=600'
+            );
+
+            if (popup.closed!) {
+              throw("Popups blocked");
+            }
+
             Get.back();
+
           },
         );
       }

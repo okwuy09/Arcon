@@ -40,6 +40,23 @@ class Storage {
     }
   }
 
+  UploadTask? uploadData(String destination, Uint8List uint8list, String filename) {
+    try {
+      final reference = _storage.refFromURL('gs://arcon-2023.appspot.com')
+          .child(
+          "$destination/$filename");
+
+      return reference.putData(uint8list);
+    } on FirebaseException catch (e) {
+      errorMessage = e.toString().split('] ')[1];
+      uploadFailed();
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      return null;
+    }
+  }
+
   UploadTask? uploadFile(String destination, File file){
     try {
       final reference = _storage.ref(destination);
