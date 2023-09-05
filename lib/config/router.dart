@@ -26,9 +26,6 @@ class CustomRouter {
         GetPage(name: qrRoute,
             page: () => const ShowQr(),
             transition: Transition.fadeIn),
-        GetPage(name: fullQrRoute,
-            page: () => const ShowFullQr(),
-            transition: Transition.fadeIn),
         GetPage(name: userDataRoute,
             page: () => const ShowUserData(),
             transition: Transition.fadeIn),
@@ -43,5 +40,4 @@ const forgotPasswordRoute = "/onboarding/forgot_password";
 const homeRoute = "/home";
 const registrationRoute = "/register";
 const qrRoute = "/qr";
-const fullQrRoute = "/full_qr/";
 const userDataRoute = "/user_data";

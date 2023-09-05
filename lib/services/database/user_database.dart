@@ -70,4 +70,8 @@ class UserDatabase {
       return null;
     }
   }
+
+  Future<void> deleteUser() async {
+    await usersCollection.doc(uID).delete();
+  }
 }

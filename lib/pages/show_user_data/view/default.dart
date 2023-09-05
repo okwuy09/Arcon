@@ -1,12 +1,13 @@
-import 'dart:html' as html;
-
 import 'package:arcon/app.dart';
 import 'package:arcon/config/config.dart';
+import 'package:arcon/controllers/controllers.dart';
 import 'package:arcon/logic/models/models.dart';
 import 'package:arcon/pages/shared/shared.dart';
+import 'package:arcon/pages/show_qr/show_qr.dart';
 import 'package:arcon/services/database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShowUserData extends StatelessWidget {
@@ -182,6 +183,7 @@ class ShowUserData extends StatelessWidget {
                                 child: item(
                                   title: "Payment Proof",
                                   value: "Tap to view payment proof",
+                                  isClickable: true
                                 ),
                               ),
                           ],
@@ -250,7 +252,7 @@ class ShowUserData extends StatelessWidget {
     );
   }
 
-  Widget item({required String title, required String value}) {
+  Widget item({required String title, required String value, bool isClickable = false}) {
     return Row(
       children: [
         CustomText(
@@ -276,7 +278,8 @@ class ShowUserData extends StatelessWidget {
                     fontSize: App.screenHeight * 0.25 * 0.07,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.1,
-                    color: CustomColors.grey[5]
+                    decoration: isClickable ? TextDecoration.underline : null,
+                    color: isClickable ? CustomColors.secondaryBlue : CustomColors.grey[5]
                 )
             ),
           ),
@@ -286,6 +289,8 @@ class ShowUserData extends StatelessWidget {
   }
 
   Widget confirmButton(User user) {
+    final ScreenshotController screenshotController = ScreenshotController();
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return CustomButton(
@@ -307,18 +312,23 @@ class ShowUserData extends StatelessWidget {
             await UserDatabase(user.id).updateUserDetails(user.toJson());
             App.stopLoading();
 
-            html.WindowBase popup = html.window.open(
-                'https://arcon-2023.web.app/full_qr/${user.id}&&${user.email}',
-                "SEND QR",
-                'left=100,top=100,width=800,height=600'
-            );
+            App.startLoading();
+            await ShowFullQr(
+              screenshotController: screenshotController,
+              userID: user.id,
+              userEmail: user.email,
+            ).sendEmail();
 
-            if (popup.closed!) {
-              throw("Popups blocked");
+            if(Get.find<UserController>().isLoading){
+              App.stopLoading();
+              Snack.show(message: "Email sent successfully", type: SnackBarType.info);
+              Future.delayed(const Duration(seconds: 2), () {
+                Get.offAllNamed(homeRoute);
+              });
+            } else {
+              App.stopLoading();
+              Get.back();
             }
-
-            Get.back();
-
           },
         );
       }
