@@ -11,7 +11,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(seconds: 4), () async {
+    Timer(const Duration(seconds: 1), () async {
       if(Auth().isSignedIn){
         Get.offAllNamed(homeRoute);
       }else {

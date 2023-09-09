@@ -74,4 +74,25 @@ class UserDatabase {
   Future<void> deleteUser() async {
     await usersCollection.doc(uID).delete();
   }
+
+  Future<int> getLastNumber() async {
+      try {
+        final result = await usersCollection.where("type", isEqualTo: "user").orderBy("number", descending: false).get();
+        if (result.docs.isNotEmpty) {
+          final last = User.fromDocumentSnapshot(result.docs.last).number;
+          return last;
+        }
+        return 0;
+      } on FirebaseException catch (e) {
+        Default.showDatabaseError(e);
+        return 0;
+      }
+  }
+
+  Future<void> assignNumber(String email) async {
+    final number = await getLastNumber();
+    await updateUserDetails({
+      "number": number + 1
+    });
+  }
 }

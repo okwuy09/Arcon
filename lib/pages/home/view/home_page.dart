@@ -25,7 +25,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         backgroundColor: CustomColors.grey[2],
         body: LayoutBuilder(
@@ -153,6 +152,10 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
           ),
         ),
 
+        SizedBox(
+          height: App.screenHeight * 0.02,
+        ),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -218,7 +221,7 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
     return FirestoreListView(
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
-        query: query,
+        query: query.orderBy("number", descending: false),
         pageSize: 10,
         itemBuilder: (context, querySnapshot, index, length) {
           return UserItem(user: User.fromDocumentSnapshot(querySnapshot));
@@ -263,7 +266,23 @@ class UserHome extends StatelessWidget {
         ResponsiveWidget(
           largeScreen: Row(
             children: [
-              Expanded(child: completeRegistration(width)),
+              Expanded(
+                child: GetX<UserController>(
+                    builder: (controller) {
+
+                      final user = controller.user.value;
+                      double progress = user.getRegistrationProgress();
+
+                      bool isRegistered = progress == 1;
+
+                      if(isRegistered) {
+                        return viewCalendar(width);
+                      } else {
+                        return completeRegistration(width);
+                      }
+                    }
+                ),
+              ),
 
               SizedBox(width: width * 0.05),
 
@@ -272,7 +291,21 @@ class UserHome extends StatelessWidget {
           ),
           smallScreen: Column(
             children: [
-              completeRegistration(width),
+              GetX<UserController>(
+                builder: (controller) {
+
+                  final user = controller.user.value;
+                  double progress = user.getRegistrationProgress();
+
+                  bool isRegistered = progress == 1;
+
+                  if(isRegistered) {
+                    return viewCalendar(width);
+                  } else {
+                    return completeRegistration(width);
+                  }
+                }
+              ),
 
               SizedBox(
                 height: App.screenHeight * 0.045,
@@ -310,6 +343,50 @@ class UserHome extends StatelessWidget {
                           }
                       ),
                     )
+                ),
+
+                SizedBox(width: width * 0.0275),
+
+                Container(
+                  height: Constants.screenHeight * 0.07,
+                  width: 2,
+                  color: CustomColors.grey[3],
+                ),
+
+                SizedBox(width: width * 0.0275),
+
+                Expanded(
+                    flex: ResponsiveWidget.isExtraSmallScreen()
+                        ? 7 : ResponsiveWidget.isSmallScreen()
+                        ? 6 : ResponsiveWidget.isMediumScreen()
+                        ? 5 : 4,
+                    child: Container(
+                      height: Constants.screenHeight * 0.07,
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.0275
+                      ),
+                      child: GetX<UserController>(
+                          builder: (controller) {
+                            String number = controller.user.value.number.toString();
+
+                            if(number.length == 1){
+                              number = "00$number";
+                            } else if(number.length == 2){
+                              number = "0$number";
+                            }
+
+                            number = "ARC$number";
+                            return CustomText(
+                                number,
+                                style: TextStyles(
+                                    color: CustomColors.grey[5]
+                                ).textBodyLarge
+                            );
+                          }
+                      ),
+                    ),
+
                 ),
 
                 SizedBox(width: width * 0.0275),
@@ -486,6 +563,137 @@ class UserHome extends StatelessWidget {
               )
           );
         }
+    );
+  }
+
+  Widget viewCalendar(double width) {
+    return completeRegistration(width);
+    //TODO
+    return Container(
+        height: ResponsiveWidget.isExtraSmallScreen()
+            ? App.screenHeight * .18: ResponsiveWidget.isSmallScreen()
+            ? App.screenHeight * .16 : ResponsiveWidget.isMediumScreen()
+            ? App.screenHeight * .15 : App.screenHeight * .18,
+        width: width,
+        decoration: BoxDecoration(
+            color: CustomColors.secondaryPink[3],
+            borderRadius: const BorderRadius.all(
+                Radius.circular(12)
+            )
+        ),
+        child: MaterialButton(
+          minWidth: width,
+          elevation: 0,
+          padding: EdgeInsets.zero,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                  Radius.circular(12)
+              )
+          ),
+          onPressed: () {
+            Get.toNamed(calendarRoute);
+          },
+          child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                        width: ResponsiveWidget.isLargeScreen()
+                            ? constraints.maxHeight * 0.64 * 0.30 : ResponsiveWidget.isMediumScreen()
+                            ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
+                            ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
+                    ),
+                    CircularStepProgressIndicator(
+                      totalSteps: 10,
+                      height: constraints.maxHeight * 0.64,
+                      width: constraints.maxHeight * 0.64,
+                      unselectedColor: CustomColors.secondaryPink[2],
+                      selectedColor: CustomColors.secondaryPink,
+                      currentStep: 10,
+                      child: Center(
+                        child: CustomText(
+                            "${DateTime.now().day}",
+                            style: TextStyle(
+                                fontFamily: "TomatoGrotesk",
+                                fontSize: ResponsiveWidget.isLargeScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.26 : ResponsiveWidget.isMediumScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.25 : ResponsiveWidget.isSmallScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.24 : constraints.maxHeight * 0.64 * 0.20,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.1,
+                                color: CustomColors.secondaryPink
+                            )
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(
+                        width: ResponsiveWidget.isLargeScreen()
+                            ? constraints.maxHeight * 0.64 * 0.30 : ResponsiveWidget.isMediumScreen()
+                            ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
+                            ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
+                    ),
+
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            "View Calendar",
+                            style: TextStyle(
+                                fontFamily: "TomatoGrotesk",
+                                fontSize: ResponsiveWidget.isLargeScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.26 : ResponsiveWidget.isMediumScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.25 : ResponsiveWidget.isSmallScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.24 : constraints.maxHeight * 0.64 * 0.20,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.1,
+                                color: CustomColors.secondaryPink
+                            ),
+                            maxLines: 3,
+                            textAlign: TextAlign.start,
+                          ),
+
+                          SizedBox(
+                              height: ResponsiveWidget.isLargeScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.10 : ResponsiveWidget.isMediumScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.09 : ResponsiveWidget.isSmallScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.08: constraints.maxHeight * 0.64 * 0.06
+                          ),
+
+                          CustomText(
+                            "CLICK TO VIEW",
+                            style: TextStyle(
+                                fontFamily: "TomatoGrotesk",
+                                fontSize: ResponsiveWidget.isLargeScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.23 : ResponsiveWidget.isMediumScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.21 : ResponsiveWidget.isSmallScreen()
+                                    ? constraints.maxHeight * 0.64 * 0.19 : constraints.maxHeight * 0.64 * 0.15,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.1,
+                                color: CustomColors.secondaryPink[2]
+                            ),
+                            maxLines: 3,
+                            textAlign: TextAlign.start,
+                          ),
+
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(
+                        width: ResponsiveWidget.isLargeScreen()
+                            ? constraints.maxHeight * 0.64 * 0.30 : ResponsiveWidget.isMediumScreen()
+                            ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
+                            ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
+                    ),
+                  ],
+                );
+              }
+          ),
+        )
     );
   }
 

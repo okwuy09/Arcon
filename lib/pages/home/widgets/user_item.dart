@@ -145,6 +145,42 @@ class UserItem extends StatelessWidget {
                                 ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
                                 ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
                         ),
+
+                        Builder(
+                          builder: (context) {
+                            String number = user.number.toString();
+
+                            if(number.length == 1){
+                              number = "00$number";
+                            } else if(number.length == 2){
+                              number = "0$number";
+                            }
+
+                            number = "ARC$number";
+                            return CustomText(
+                              number,
+                              style: TextStyle(
+                                  fontFamily: "TomatoGrotesk",
+                                  fontSize: ResponsiveWidget.isLargeScreen()
+                                      ? constraints.maxHeight * 0.64 * 0.26 : ResponsiveWidget.isMediumScreen()
+                                      ? constraints.maxHeight * 0.64 * 0.25 : ResponsiveWidget.isSmallScreen()
+                                      ? constraints.maxHeight * 0.64 * 0.24 : constraints.maxHeight * 0.64 * 0.20,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.1,
+                                  color: isRegistered ? CustomColors.success : CustomColors.primary
+                              ),
+                              maxLines: 3,
+                              textAlign: TextAlign.start,
+                            );
+                          }
+                        ),
+
+                        SizedBox(
+                            width: ResponsiveWidget.isLargeScreen()
+                                ? constraints.maxHeight * 0.64 * 0.30 : ResponsiveWidget.isMediumScreen()
+                                ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
+                                ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
+                        ),
                       ],
                     );
                   }

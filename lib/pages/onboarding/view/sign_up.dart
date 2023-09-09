@@ -180,6 +180,7 @@ class SignUp extends StatelessWidget {
         id: uID,
         name: controller.name.value,
         email: controller.emailAddress.value,
+        number: await UserDatabase(uID).getLastNumber()
     );
 
     await UserDatabase(uID).createUser(user.toJson());

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:arcon/app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -483,8 +484,8 @@ class FirestoreListView<Document> extends FirestoreQueryBuilder<Document> {
               const Expanded(child: SizedBox()),
 
               SizedBox(
-                height: 70,
-                width: 70,
+                height: App.screenHeight * 0.3,
+                width: App.screenHeight * 0.3,
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: SvgPicture.asset(
@@ -499,7 +500,7 @@ class FirestoreListView<Document> extends FirestoreQueryBuilder<Document> {
               CustomText(
                 'No result was found',
                 style: TextStyles(
-                  color: Colors.white.withOpacity(0.4),
+                  color: CustomColors.grey[5]!.withOpacity(0.4),
                 ).textBodyExtraLarge,
               ),
 
