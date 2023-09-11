@@ -1,12 +1,16 @@
+import 'dart:convert';
+import 'dart:html' show AnchorElement;
+
 import 'package:arcon/app.dart';
 import 'package:arcon/config/config.dart';
 import 'package:arcon/controllers/controllers.dart';
 import 'package:arcon/logic/models/models.dart';
 import 'package:arcon/pages/shared/shared.dart';
-import 'package:arcon/services/authentication.dart';
-import 'package:arcon/services/database/database.dart';
+import 'package:arcon/services/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
@@ -79,6 +83,7 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
   @override
   void initState() {
     tabController = TabController(length: 3, vsync: this);
+    fetchItems();
     super.initState();
   }
 
@@ -87,6 +92,9 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
     tabController.dispose();
     super.dispose();
   }
+
+  List<User> participants = [];
+  bool isLoading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -99,42 +107,82 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
           height: App.screenHeight * 0.05,
         ),
 
-        Align(
-          alignment: Alignment.centerLeft,
-          child: SizedBox(
-            height: App.screenHeight * 0.05,
-            child: TabBar(
-              controller: tabController,
-              isScrollable: true,
-              indicator: const UnderlineTabIndicator(
-                borderSide: BorderSide(color: CustomColors.primary),
-              ),
-              labelColor: CustomColors.primary,
-              labelStyle: const TextStyle(
-                  fontFamily: 'TomatoGrotesk',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600
-              ),
-              unselectedLabelColor: CustomColors.grey[4],
-              unselectedLabelStyle: const TextStyle(
-                  fontFamily: 'TomatoGrotesk',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600
-              ),
-              onTap: (index) {},
-              tabs: const [
-                Tab(
-                  text: "ALL",
+        Row(
+          children: [
+            Expanded(
+              flex: 5,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  height: App.screenHeight * 0.05,
+                  child: TabBar(
+                    controller: tabController,
+                    isScrollable: true,
+                    indicator: const UnderlineTabIndicator(
+                      borderSide: BorderSide(color: CustomColors.primary),
+                    ),
+                    labelColor: CustomColors.primary,
+                    labelStyle: TextStyle(
+                        fontFamily: "TomatoGrotesk",
+                        fontSize: ResponsiveWidget.isLargeScreen()
+                            ? App.screenHeight * 0.1 * 0.21 : ResponsiveWidget.isMediumScreen()
+                            ? App.screenHeight * 0.1 * 0.20 : ResponsiveWidget.isSmallScreen()
+                            ? App.screenHeight * 0.1 * 0.19 : App.screenHeight * 0.1 * 0.18,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.1,
+                    ),
+                    unselectedLabelColor: CustomColors.grey[4],
+                    unselectedLabelStyle: TextStyle(
+                      fontFamily: "TomatoGrotesk",
+                      fontSize: ResponsiveWidget.isLargeScreen()
+                          ? App.screenHeight * 0.1 * 0.21 : ResponsiveWidget.isMediumScreen()
+                          ? App.screenHeight * 0.1 * 0.20 : ResponsiveWidget.isSmallScreen()
+                          ? App.screenHeight * 0.1 * 0.19 : App.screenHeight * 0.1 * 0.18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.1,
+                    ),
+                    onTap: (index) {},
+                    tabs: const [
+                      Tab(
+                        text: "ALL",
+                      ),
+                      Tab(
+                        text: "CONFIRMED",
+                      ),
+                      Tab(
+                        text: "NOT CONFIRMED",
+                      ),
+                    ],
+                  ),
                 ),
-                Tab(
-                  text: "CONFIRMED",
-                ),
-                Tab(
-                  text: "NOT CONFIRMED",
-                ),
-              ],
+              ),
             ),
-          ),
+
+            MaterialButton(
+              height: App.screenHeight * 0.05,
+              minWidth: App.screenHeight * 0.05,
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  )
+              ),
+              onPressed: () {
+                saveTextFile();
+              },
+              child: Center(
+                child: Icon(
+                  Icons.print,
+                  color: CustomColors.primary,
+                  size: ResponsiveWidget.isLargeScreen()
+                      ? App.screenHeight * 0.05 * 0.66 : ResponsiveWidget.isMediumScreen()
+                      ? App.screenHeight * 0.05 * 0.65 : ResponsiveWidget.isSmallScreen()
+                      ? App.screenHeight * 0.05 * 0.64 : App.screenHeight * 0.05 * 0.60,
+                ),
+              ),
+            )
+          ],
         ),
 
         SizedBox(
@@ -145,9 +193,9 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
           child: TabBarView(
               controller: tabController,
               children: [
-                list(UserDatabase.usersCollection.where("type", isEqualTo: "user")),
-                list(UserDatabase.usersCollection.where("type", isEqualTo: "user").where('details.paymentConfirmed', isEqualTo: "true")),
-                list(UserDatabase.usersCollection.where("type", isEqualTo: "user").where('details.paymentConfirmed', isEqualTo: "false")),
+                list(0),
+                list(1),
+                list(2),
               ]
           ),
         ),
@@ -217,16 +265,129 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
     );
   }
 
-  Widget list(Query query){
-    return FirestoreListView(
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        query: query.orderBy("number", descending: false),
-        pageSize: 10,
-        itemBuilder: (context, querySnapshot, index, length) {
-          return UserItem(user: User.fromDocumentSnapshot(querySnapshot));
+  Widget list(int index){
+    List<User> filtered = [];
+
+    switch(index){
+      case 0:
+        filtered = participants;
+        break;
+      case 1:
+        for(User user in participants){
+          if(user.details["paymentConfirmed"] == "true"){
+            filtered.add(user);
+          }
         }
+        break;
+      case 2:
+        for(User user in participants){
+          if(user.details["paymentConfirmed"] == "false"){
+            filtered.add(user);
+          }
+        }
+        break;
+    }
+
+    return Builder(
+      builder: (context) {
+        if(isLoading){
+          return const SpinKitWaveSpinner(
+            color: CustomColors.primary,
+            size: 65,
+          );
+        }
+
+        if(filtered.isEmpty){
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Expanded(child: SizedBox()),
+
+              SizedBox(
+                height: App.screenHeight * 0.3,
+                width: App.screenHeight * 0.3,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SvgPicture.asset(
+                      'assets/images/no_result.svg',
+                      semanticsLabel: "No Event"
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              CustomText(
+                'No result was found',
+                style: TextStyles(
+                  color: CustomColors.grey[5]!.withOpacity(0.4),
+                ).textBodyExtraLarge,
+              ),
+
+              const Expanded(child: SizedBox())
+            ],
+          );
+        }
+
+        return ListView.builder(
+          itemCount: filtered.length,
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemBuilder: (context, index) {
+            return UserItem(user: filtered[index]);
+          },
+        );
+      },
     );
+  }
+
+  void fetchItems() async {
+    List<User> users = [];
+
+    final snapshot = await UserDatabase.usersCollection
+        .where("type", isEqualTo: "user")
+        .orderBy("number", descending: false)
+        .get();
+
+    for(DocumentSnapshot documentSnapshot in snapshot.docs){
+      users.add(User.fromDocumentSnapshot(documentSnapshot));
+    }
+
+    setState(() {
+      participants = users;
+      isLoading = false;
+    });
+  }
+
+  void saveTextFile() {
+
+    String text = "LIST OF REGISTERED USERS\n\n";
+
+    for(User user in participants) {
+      String number = user.number.toString();
+      if(number.length == 1){
+        number = "00$number";
+      } else if(number.length == 2){
+        number = "0$number";
+      }
+
+      number = "ARC$number";
+
+
+      bool isPaymentSubmitted = user.details["paymentSubmitted"] == "true";
+      bool isPaymentConfirmed = user.details["paymentConfirmed"] == "true";
+      final status =  "PAYMENT ${
+          isPaymentSubmitted ? isPaymentConfirmed
+              ? "CONFIRMED" : "NOT YET CONFIRMED" : "NOT YET MADE"}";
+
+      text = "$text$number ${user.name} - $status\n";
+    }
+
+    AnchorElement()
+      ..href = '${Uri.dataFromString(text, mimeType: 'text/csv', encoding: utf8)}'
+      ..download = "participant_list"
+      ..style.display = 'none'
+      ..click();
   }
 }
 
@@ -567,8 +728,6 @@ class UserHome extends StatelessWidget {
   }
 
   Widget viewCalendar(double width) {
-    return completeRegistration(width);
-    //TODO
     return Container(
         height: ResponsiveWidget.isExtraSmallScreen()
             ? App.screenHeight * .18: ResponsiveWidget.isSmallScreen()

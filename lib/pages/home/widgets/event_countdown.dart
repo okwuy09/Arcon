@@ -52,7 +52,11 @@ class _EventCountdownState extends State<EventCountdown> {
   @override
   Widget build(BuildContext context) {
 
-    final dateTime = DateTime.fromMillisecondsSinceEpoch(duration.inMilliseconds);
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(duration.inMilliseconds);
+
+    if(duration.inMilliseconds.isNegative){
+      dateTime = DateTime(2023, 09, 00, 00, 00, 0, 0, 0);
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -60,7 +64,7 @@ class _EventCountdownState extends State<EventCountdown> {
 
         return Row(
           children: [
-            timeWidget("DAYS", dateTime.day.toString(), maxWidth),
+            timeWidget("DAYS", duration.inMilliseconds.isNegative ? "0" : dateTime.day.toString(), maxWidth),
 
             const Expanded(child: SizedBox()),
 
