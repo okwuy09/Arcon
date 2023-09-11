@@ -800,7 +800,7 @@ class UserHome extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CustomText(
-                            "View Calendar",
+                            "View Event Schedule",
                             style: TextStyle(
                                 fontFamily: "TomatoGrotesk",
                                 fontSize: ResponsiveWidget.isLargeScreen()
