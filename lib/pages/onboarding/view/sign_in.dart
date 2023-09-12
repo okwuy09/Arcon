@@ -32,7 +32,7 @@ class SignIn extends StatelessWidget {
                 const Expanded(flex: 1, child: SizedBox()),
 
                 SizedBox(
-                  height: height * 0.84,
+                  height: height * 0.88,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -76,7 +76,7 @@ class SignIn extends StatelessWidget {
                         child: _Body(width: width * 0.7)
                       ),
 
-                      SizedBox(height: Dimen.verticalMarginHeight * 3),
+                      SizedBox(height: Dimen.verticalMarginHeight),
 
                       CustomButton(
                         text: "SIGN IN",
@@ -86,28 +86,17 @@ class SignIn extends StatelessWidget {
                         margin: EdgeInsets.only(right: Dimen.horizontalMarginWidth * 2),
                       ),
 
-                      SizedBox(height: Dimen.verticalMarginHeight * 1.5),
+                      SizedBox(height: Dimen.verticalMarginHeight),
 
-                      Center(
-                        child: Container(
-                          height: Constants.screenHeight * 0.03,
-                          margin: EdgeInsets.only(right: Dimen.horizontalMarginWidth * 2),
-                          child: TextButton(
-                            onPressed: () {
-                              Get.toNamed(signUpRoute);
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                            ),
-                            child: CustomText(
-                              "Don't have an account? - Sign Up",
-                              textAlign: TextAlign.center,
-                              style: TextStyles(
-                                color: CustomColors.grey[5],
-                              ).textBodyLarge,
-                            ),
-                          ),
-                        ),
+                      CustomButton(
+                        text: "Don't have an account? - Sign Up",
+                        textColor: CustomColors.primary,
+                        borderColor: CustomColors.primary,
+                        color: Colors.white,
+                        onPressed: () {
+                          Get.toNamed(signUpRoute);
+                        },
+                        margin: EdgeInsets.only(right: Dimen.horizontalMarginWidth * 2),
                       ),
                     ],
                   ),

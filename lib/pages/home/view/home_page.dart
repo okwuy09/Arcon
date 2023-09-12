@@ -13,6 +13,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/widgets.dart';
 
@@ -418,11 +419,11 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
 
       bool isPaymentSubmitted = user.details["paymentSubmitted"] == "true";
       bool isPaymentConfirmed = user.details["paymentConfirmed"] == "true";
-      final status =  "PAYMENT ${
+      final status = "PAYMENT ${
           isPaymentSubmitted ? isPaymentConfirmed
               ? "CONFIRMED" : "NOT YET CONFIRMED" : "NOT YET MADE"}";
 
-      text = "$text$number ${user.name} - $status\n";
+      text = "$text$number  ${user.name} (${user.id})  -  $status\n";
     }
 
     AnchorElement()
@@ -464,7 +465,26 @@ class UserHome extends StatelessWidget {
 
         const EventCountdown(),
 
-        SizedBox(height: App.screenHeight * 0.04),
+        SizedBox(height: App.screenHeight * 0.03),
+
+        GestureDetector(
+          onTap: () {
+            launchUrl(Uri.parse('https://www.menti.com/aljzcwq7cf99'));
+          },
+          child: CustomText(
+              "Tap to fill out a quick poll!",
+              style: TextStyle(
+                  fontFamily: "TomatoGrotesk",
+                  fontSize: App.screenHeight * 0.25 * 0.08,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.1,
+                  decoration: TextDecoration.underline,
+                  color: CustomColors.secondaryBlue
+              )
+          ),
+        ),
+
+        SizedBox(height: App.screenHeight * 0.03),
 
         ResponsiveWidget(
           largeScreen: Row(
