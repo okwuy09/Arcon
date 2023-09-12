@@ -129,7 +129,7 @@ class SignUp extends StatelessWidget {
       await Auth().signUp(controller.emailAddress.value, controller.password.value);
 
       if (Auth().isSignedIn) {
-        await _createUser(controller, Auth().uID);
+        await _createUser(controller);
         App.stopLoading();
 
         Snack.show(message: 'Sign up successful', type: SnackBarType.success);
@@ -174,16 +174,16 @@ class SignUp extends StatelessWidget {
     return true;
   }
 
-  Future<void> _createUser (SignUpController controller, String uID) async {
+  Future<void> _createUser (SignUpController controller) async {
 
     final User user = User(
-        id: uID,
+        id: Auth().uID,
         name: controller.name.value,
         email: controller.emailAddress.value,
-        number: await UserDatabase(uID).getLastNumber()
+        number: await UserDatabase(Auth().uID).getLastNumber() + 1,
     );
 
-    await UserDatabase(uID).createUser(user.toJson());
+    await UserDatabase(Auth().uID).createUser(user.toJson());
   }
 }
 

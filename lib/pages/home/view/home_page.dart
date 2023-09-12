@@ -29,6 +29,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         backgroundColor: CustomColors.grey[2],
         body: LayoutBuilder(
@@ -135,9 +136,9 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
                     unselectedLabelStyle: TextStyle(
                       fontFamily: "TomatoGrotesk",
                       fontSize: ResponsiveWidget.isLargeScreen()
-                          ? App.screenHeight * 0.1 * 0.21 : ResponsiveWidget.isMediumScreen()
-                          ? App.screenHeight * 0.1 * 0.20 : ResponsiveWidget.isSmallScreen()
-                          ? App.screenHeight * 0.1 * 0.19 : App.screenHeight * 0.1 * 0.18,
+                          ? App.screenHeight * 0.1 * 0.18 : ResponsiveWidget.isMediumScreen()
+                          ? App.screenHeight * 0.1 * 0.17 : ResponsiveWidget.isSmallScreen()
+                          ? App.screenHeight * 0.1 * 0.16 : App.screenHeight * 0.1 * 0.15,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.1,
                     ),
@@ -169,6 +170,47 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
                   )
               ),
               onPressed: () {
+
+                final user = Get.find<UserController>().user.value;
+                double progress = user.getRegistrationProgress();
+
+                bool isRegistered = progress == 1;
+
+                if(isRegistered) {
+                  Get.toNamed('$qrRoute/${Get.find<UserController>().user.value.id}&&${Get.find<UserController>().user.value.email}');
+                } else {
+                  Snack.show(
+                      message: "Your need to complete your registration"
+                          " before you can view your QR",
+                      type: SnackBarType.info
+                  );
+                }
+              },
+              child: Center(
+                child: Icon(
+                  Icons.qr_code_rounded,
+                  color: CustomColors.primary,
+                  size: ResponsiveWidget.isLargeScreen()
+                      ? App.screenHeight * 0.05 * 0.62 : ResponsiveWidget.isMediumScreen()
+                      ? App.screenHeight * 0.05 * 0.61 : ResponsiveWidget.isSmallScreen()
+                      ? App.screenHeight * 0.05 * 0.60 : App.screenHeight * 0.05 * 0.58,
+                ),
+              ),
+            ),
+
+            SizedBox(width: App.screenHeight * 0.05 * 0.2),
+
+            MaterialButton(
+              height: App.screenHeight * 0.05,
+              minWidth: App.screenHeight * 0.05,
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  )
+              ),
+              onPressed: () {
                 saveTextFile();
               },
               child: Center(
@@ -176,9 +218,9 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
                   Icons.print,
                   color: CustomColors.primary,
                   size: ResponsiveWidget.isLargeScreen()
-                      ? App.screenHeight * 0.05 * 0.66 : ResponsiveWidget.isMediumScreen()
-                      ? App.screenHeight * 0.05 * 0.65 : ResponsiveWidget.isSmallScreen()
-                      ? App.screenHeight * 0.05 * 0.64 : App.screenHeight * 0.05 * 0.60,
+                      ? App.screenHeight * 0.05 * 0.62 : ResponsiveWidget.isMediumScreen()
+                      ? App.screenHeight * 0.05 * 0.61 : ResponsiveWidget.isSmallScreen()
+                      ? App.screenHeight * 0.05 * 0.60 : App.screenHeight * 0.05 * 0.58,
                 ),
               ),
             )

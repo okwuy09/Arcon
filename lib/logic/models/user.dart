@@ -1,4 +1,3 @@
-import 'package:arcon/services/database/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 
 class User {
@@ -75,10 +74,8 @@ class User {
   User.fromDocumentSnapshot(firebase.DocumentSnapshot snapshot){
     id = snapshot.get("id") ?? "";
     name = snapshot.get("name") ?? "";
-
     final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     number = data["number"] ?? 0;
-
     email = snapshot.get("email") ?? "";
     type = snapshot.get("type") ?? "";
     phoneNumber = snapshot.get("phoneNumber") ?? "";
@@ -87,9 +84,6 @@ class User {
     credentials = snapshot.get("credentials") ?? "";
     hasBeenValidated = snapshot.get("hasBeenValidated") ?? false;
     details = snapshot.get("details");
-    if(number == 0 && type == "user"){
-      UserDatabase(id).assignNumber(email);
-    }
   }
 
   Map<String, dynamic> toJson() {

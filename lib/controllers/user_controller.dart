@@ -21,4 +21,6 @@ class UserController extends GetxController {
   clearAll(){
     user.value = User.empty();
   }
+
+  RxInt scheduleIndex = 0.obs;
 }

@@ -77,7 +77,7 @@ class UserDatabase {
 
   Future<int> getLastNumber() async {
       try {
-        final result = await usersCollection.where("type", isEqualTo: "user").orderBy("number", descending: false).get();
+        final result = await usersCollection.orderBy("number", descending: false).get();
         if (result.docs.isNotEmpty) {
           final last = User.fromDocumentSnapshot(result.docs.last).number;
           return last;

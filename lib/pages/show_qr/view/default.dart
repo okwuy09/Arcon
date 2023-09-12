@@ -70,7 +70,7 @@ class _ShowQrState extends State<ShowQr> {
                           )
                       ),
 
-                      SizedBox(height: App.screenHeight * 0.025),
+                      SizedBox(height: App.screenHeight * 0.015),
 
                       CustomText(
                           "Thank you for registering for ARCON 2023. "
