@@ -224,6 +224,33 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
                       ? App.screenHeight * 0.05 * 0.60 : App.screenHeight * 0.05 * 0.58,
                 ),
               ),
+            ),
+
+            SizedBox(width: App.screenHeight * 0.05 * 0.2),
+
+            MaterialButton(
+              height: App.screenHeight * 0.05,
+              minWidth: App.screenHeight * 0.05,
+              elevation: 0,
+              padding: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  )
+              ),
+              onPressed: () {
+                saveValidatedTextFile();
+              },
+              child: Center(
+                child: Icon(
+                  Icons.local_printshop_outlined,
+                  color: CustomColors.primary,
+                  size: ResponsiveWidget.isLargeScreen()
+                      ? App.screenHeight * 0.05 * 0.62 : ResponsiveWidget.isMediumScreen()
+                      ? App.screenHeight * 0.05 * 0.61 : ResponsiveWidget.isSmallScreen()
+                      ? App.screenHeight * 0.05 * 0.60 : App.screenHeight * 0.05 * 0.58,
+                ),
+              ),
             )
           ],
         ),
@@ -432,6 +459,34 @@ class _AdminHomeState extends State<AdminHome> with TickerProviderStateMixin {
       ..style.display = 'none'
       ..click();
   }
+
+  void saveValidatedTextFile() {
+
+    String text = "LIST OF VALIDATED USERS\n\n";
+
+    for(User user in participants) {
+
+      if(user.hasBeenValidated){
+
+        String number = user.number.toString();
+        if(number.length == 1){
+          number = "00$number";
+        } else if(number.length == 2){
+          number = "0$number";
+        }
+
+        number = "ARC$number";
+
+        text = "$text$number  ${user.name} (${user.phoneNumber})  -  VALIDATED\n";
+      }
+    }
+
+    AnchorElement()
+      ..href = '${Uri.dataFromString(text, mimeType: 'text/csv', encoding: utf8)}'
+      ..download = "validated_participant_list"
+      ..style.display = 'none'
+      ..click();
+  }
 }
 
 class UserHome extends StatelessWidget {
@@ -509,7 +564,8 @@ class UserHome extends StatelessWidget {
 
               SizedBox(width: width * 0.05),
 
-              Expanded(child: viewQR(width))
+              Expanded(child: getCertificate(width))
+             // Expanded(child: viewQR(width))
             ],
           ),
           smallScreen: Column(
@@ -534,7 +590,8 @@ class UserHome extends StatelessWidget {
                 height: App.screenHeight * 0.045,
               ),
 
-              viewQR(width)
+              getCertificate(width)
+              //viewQR(width)
             ],
           ),
         ),
@@ -1036,6 +1093,149 @@ class UserHome extends StatelessWidget {
                                       fontWeight: FontWeight.w700,
                                       letterSpacing: 0.1,
                                       color: CustomColors.secondaryOrange[2]
+                                  ),
+                                  maxLines: 3,
+                                  textAlign: TextAlign.start,
+                                ),
+
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(
+                              width: ResponsiveWidget.isLargeScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.30 : ResponsiveWidget.isMediumScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
+                          ),
+                        ],
+                      );
+                    }
+                ),
+              )
+          );
+        }
+    );
+  }
+
+  Widget getCertificate(double width) {
+    return GetX<UserController>(
+        builder: (controller) {
+
+          final user = controller.user.value;
+          double progress = user.getRegistrationProgress();
+
+          bool isRegistered = progress == 1;
+
+          return Container(
+              height: ResponsiveWidget.isExtraSmallScreen()
+                  ? App.screenHeight * .18: ResponsiveWidget.isSmallScreen()
+                  ? App.screenHeight * .16 : ResponsiveWidget.isMediumScreen()
+                  ? App.screenHeight * .15 : App.screenHeight * .18,
+              width: width,
+              decoration: BoxDecoration(
+                  color: CustomColors.secondaryPurple[3],
+                  borderRadius: const BorderRadius.all(
+                      Radius.circular(12)
+                  )
+              ),
+              child: MaterialButton(
+                minWidth: width,
+                elevation: 0,
+                padding: EdgeInsets.zero,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(12)
+                    )
+                ),
+                onPressed: () {
+                  if(isRegistered) {
+                    Get.toNamed(certificateRoute);
+                  } else {
+                    Snack.show(
+                        message: "Your need to complete your registration"
+                            " before you can view your QR",
+                        type: SnackBarType.info
+                    );
+                  }
+                },
+                child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              width: ResponsiveWidget.isLargeScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.30 : ResponsiveWidget.isMediumScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
+                          ),
+
+                          CircularStepProgressIndicator(
+                            totalSteps: 10,
+                            height: constraints.maxHeight * 0.64,
+                            width: constraints.maxHeight * 0.64,
+                            unselectedColor: CustomColors.secondaryPurple[2],
+                            selectedColor: CustomColors.secondaryPurple,
+                            currentStep: (progress * 10).floor(),
+                            child: Center(
+                                child: Icon(
+                                  Icons.newspaper,
+                                  color: CustomColors.secondaryPurple,
+                                  size: ResponsiveWidget.isLargeScreen()
+                                      ? constraints.maxHeight * 0.64 * 0.46 : ResponsiveWidget.isMediumScreen()
+                                      ? constraints.maxHeight * 0.64 * 0.45 : ResponsiveWidget.isSmallScreen()
+                                      ? constraints.maxHeight * 0.64 * 0.44 : constraints.maxHeight * 0.64 * 0.40,
+                                )
+                            ),
+                          ),
+
+                          SizedBox(
+                              width: ResponsiveWidget.isLargeScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.30 : ResponsiveWidget.isMediumScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.29 : ResponsiveWidget.isSmallScreen()
+                                  ? constraints.maxHeight * 0.64 * 0.28: constraints.maxHeight * 0.64 * 0.26
+                          ),
+
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  "Get your certificate",
+                                  style: TextStyle(
+                                      fontFamily: "TomatoGrotesk",
+                                      fontSize: ResponsiveWidget.isLargeScreen()
+                                          ? constraints.maxHeight * 0.64 * 0.26 : ResponsiveWidget.isMediumScreen()
+                                          ? constraints.maxHeight * 0.64 * 0.25 : ResponsiveWidget.isSmallScreen()
+                                          ? constraints.maxHeight * 0.64 * 0.24 : constraints.maxHeight * 0.64 * 0.20,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.1,
+                                      color: CustomColors.secondaryPurple
+                                  ),
+                                  maxLines: 3,
+                                  textAlign: TextAlign.start,
+                                ),
+
+                                SizedBox(
+                                    height: ResponsiveWidget.isLargeScreen()
+                                        ? constraints.maxHeight * 0.64 * 0.10 : ResponsiveWidget.isMediumScreen()
+                                        ? constraints.maxHeight * 0.64 * 0.09 : ResponsiveWidget.isSmallScreen()
+                                        ? constraints.maxHeight * 0.64 * 0.08: constraints.maxHeight * 0.64 * 0.06
+                                ),
+
+                                CustomText(
+                                  "CLICK TO GET",
+                                  style: TextStyle(
+                                      fontFamily: "TomatoGrotesk",
+                                      fontSize: ResponsiveWidget.isLargeScreen()
+                                          ? constraints.maxHeight * 0.64 * 0.23 : ResponsiveWidget.isMediumScreen()
+                                          ? constraints.maxHeight * 0.64 * 0.21 : ResponsiveWidget.isSmallScreen()
+                                          ? constraints.maxHeight * 0.64 * 0.19 : constraints.maxHeight * 0.64 * 0.15,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.1,
+                                      color: CustomColors.secondaryPurple[2]
                                   ),
                                   maxLines: 3,
                                   textAlign: TextAlign.start,

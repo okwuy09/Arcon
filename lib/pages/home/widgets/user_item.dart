@@ -45,7 +45,7 @@ class UserItem extends StatelessWidget {
                   )
               ),
               onPressed: () {
-                Get.toNamed(userDataRoute, arguments: {"user": user});
+                Get.toNamed("$userDataRoute/${user.id}");
               },
               child: LayoutBuilder(
                   builder: (context, constraints) {

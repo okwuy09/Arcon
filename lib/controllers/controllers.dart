@@ -1,3 +1,4 @@
+export 'certificate_controller.dart';
 export 'onboarding_controller.dart';
 export 'registration_controller.dart';
 export 'reset_password_controller.dart';

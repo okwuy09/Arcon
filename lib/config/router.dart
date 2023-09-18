@@ -1,3 +1,4 @@
+import 'package:arcon/pages/certificate/certificate.dart';
 import 'package:arcon/pages/home/home.dart';
 import 'package:arcon/pages/onboarding/onboarding.dart';
 import 'package:arcon/pages/register/register.dart';
@@ -30,6 +31,9 @@ class CustomRouter {
         GetPage(name: qrRoute,
             page: () => const ShowQr(),
             transition: Transition.fadeIn),
+        GetPage(name: certificateRoute,
+            page: () =>  Certificate(),
+            transition: Transition.fadeIn),
         GetPage(name: userDataRoute,
             page: () => const ShowUserData(),
             transition: Transition.fadeIn),
@@ -43,6 +47,7 @@ const signUpRoute = "/onboarding/sign_up";
 const forgotPasswordRoute = "/onboarding/forgot_password";
 const homeRoute = "/home";
 const registrationRoute = "/register";
+const certificateRoute = "/certificate";
 const calendarRoute = "/calendar";
 const qrRoute = "/qr";
 const userDataRoute = "/user_data";

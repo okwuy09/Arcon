@@ -30,25 +30,29 @@ class Auth {
     Snack.show(message: errorMessage, type: SnackBarType.error);
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<String> signUp(String email, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      final user = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      return user.user?.uid ?? "";
     } on FirebaseAuthException catch (e) {
       errorMessage = e.toString().split('] ')[1];
       if (kDebugMode) {
         print(e.toString());
       }
+      return "";
     }
   }
 
-  Future<void> signIn(String email, String password) async {
+  Future<String> signIn(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      final user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return user.user?.uid ?? "";
     } on Exception catch (e) {
       errorMessage = e.toString().split('] ')[1];
       if (kDebugMode) {
         print(e.toString());
       }
+      return "";
     }
   }
 
