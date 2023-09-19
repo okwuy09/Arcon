@@ -26,7 +26,7 @@ class _ShowUserDataState extends State<ShowUserData> with TickerProviderStateMix
 
   @override
   void initState() {
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
 
     tabController.addListener(() {
       changeActiveIndex(tabController.index);
@@ -87,93 +87,46 @@ class _ShowUserDataState extends State<ShowUserData> with TickerProviderStateMix
                               user: user,
                               constraints: constraints,
                             ),
+
+                            _SurveyResponseTwo(
+                              user: user,
+                              constraints: constraints,
+                            ),
                           ],
                         ),
                       ),
 
                       SizedBox(height: App.screenHeight * 0.025),
 
-                      Padding(
-                        padding: EdgeInsets.only(right: Dimen.horizontalMarginWidth * 2),
-                        child: Row(
-                          children: [
+                      Row(
+                        children: [
 
-                            Container(
-                                width: 42,
-                                height: 42,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.transparent,
-                                ),
-                                child: Builder(
-                                    builder: (context) {
-                                      final enable = _activeIndex != 0;
-                                      return MaterialButton(
-                                        shape: const CircleBorder(),
-                                        color: CustomColors.grey[2],
-                                        onPressed: () {
-                                          if(enable) {
-                                            tabController.animateTo(tabController.index - 1);
-                                          }
-                                        },
-                                        elevation: 0,
-                                        padding: const EdgeInsets.all(0),
-                                        child: Center(
-                                          child: RotatedBox(
-                                            quarterTurns: 2,
-                                            child: Builder(
-                                                builder: (context) {
-                                                  final enable = _activeIndex != 0;
-                                                  return SVG(
-                                                      'assets/icons/right_arrow.svg',
-                                                      height: 21,
-                                                      width: 21,
-                                                      color: enable ? CustomColors.grey[5] : CustomColors.grey[4],
-                                                      semanticsLabel: "Back"
-                                                  );
-                                                }
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                )
-                            ),
-
-                            const Expanded(child: SizedBox()),
-
-                            Builder(
-                                builder: (context) {
-                                  return buildIndicator(_activeIndex);
-                                }
-                            ),
-
-                            const Expanded(child: SizedBox()),
-
-                            Container(
-                                width: 42,
-                                height: 42,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.transparent,
-                                ),
-                                child: Builder(
-                                    builder: (context) {
-                                      final enable = _activeIndex != 1;
-                                      return MaterialButton(
-                                        shape: const CircleBorder(),
-                                        color: CustomColors.grey[2],
-                                        onPressed: () {
-                                          if(enable) {
-                                            tabController.animateTo(tabController.index + 1);
-                                          }
-                                        },
-                                        elevation: 0,
-                                        padding: const EdgeInsets.all(0),
-                                        child: Center(
+                          Container(
+                              width: 42,
+                              height: 42,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent,
+                              ),
+                              child: Builder(
+                                  builder: (context) {
+                                    final enable = _activeIndex != 0;
+                                    return MaterialButton(
+                                      shape: const CircleBorder(),
+                                      color: CustomColors.grey[2],
+                                      onPressed: () {
+                                        if(enable) {
+                                          tabController.animateTo(tabController.index - 1);
+                                        }
+                                      },
+                                      elevation: 0,
+                                      padding: const EdgeInsets.all(0),
+                                      child: Center(
+                                        child: RotatedBox(
+                                          quarterTurns: 2,
                                           child: Builder(
                                               builder: (context) {
-                                                final enable = _activeIndex != 1;
+                                                final enable = _activeIndex != 0;
                                                 return SVG(
                                                     'assets/icons/right_arrow.svg',
                                                     height: 21,
@@ -184,13 +137,62 @@ class _ShowUserDataState extends State<ShowUserData> with TickerProviderStateMix
                                               }
                                           ),
                                         ),
-                                      );
-                                    }
-                                )
-                            ),
+                                      ),
+                                    );
+                                  }
+                              )
+                          ),
 
-                          ],
-                        ),
+                          const Expanded(child: SizedBox()),
+
+                          Builder(
+                              builder: (context) {
+                                return buildIndicator(_activeIndex);
+                              }
+                          ),
+
+                          const Expanded(child: SizedBox()),
+
+                          Container(
+                              width: 42,
+                              height: 42,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent,
+                              ),
+                              child: Builder(
+                                  builder: (context) {
+                                    final enable = _activeIndex != 2;
+                                    return MaterialButton(
+                                      shape: const CircleBorder(),
+                                      color: CustomColors.grey[2],
+                                      onPressed: () {
+                                        if(enable) {
+                                          tabController.animateTo(tabController.index + 1);
+                                        }
+                                      },
+                                      elevation: 0,
+                                      padding: const EdgeInsets.all(0),
+                                      child: Center(
+                                        child: Builder(
+                                            builder: (context) {
+                                              final enable = _activeIndex != 2;
+                                              return SVG(
+                                                  'assets/icons/right_arrow.svg',
+                                                  height: 21,
+                                                  width: 21,
+                                                  color: enable ? CustomColors.grey[5] : CustomColors.grey[4],
+                                                  semanticsLabel: "Back"
+                                              );
+                                            }
+                                        ),
+                                      ),
+                                    );
+                                  }
+                              )
+                          ),
+
+                        ],
                       ),
 
                       SizedBox(height: App.screenHeight * 0.025),
@@ -330,7 +332,7 @@ class _ShowUserDataState extends State<ShowUserData> with TickerProviderStateMix
   Widget buildIndicator(int activeIndex) {
     return AnimatedSmoothIndicator(
       activeIndex: activeIndex,
-      count: 2,
+      count: 3,
       duration: const Duration(milliseconds: 500),
       effect: WormEffect(
           dotColor: CustomColors.grey[3]!,
@@ -581,6 +583,95 @@ class _SurveyResponse extends StatelessWidget {
               title: "Areas of improvement",
               value: user.details["improvements"] ?? "",
             ),
+          ],
+        )
+    );
+  }
+
+  Widget item({required String title, required String value, bool isClickable = false}) {
+
+    if(value.contains('/*OPTION*/')){
+      final fields = value.split('/*OPTION*/');
+      value = "";
+      for(String field in fields){
+        value = '$value${value.isEmpty ? "" : "\n"}$field';
+      }
+    }
+
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CustomText(
+            title,
+            style: TextStyle(
+                fontFamily: "TomatoGrotesk",
+                fontSize: App.screenHeight * 0.25 * 0.07,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.1,
+                color: CustomColors.grey[5]
+            ),
+          ),
+
+          SizedBox(
+            height: App.screenHeight * 0.01,
+            width: double.infinity,
+          ),
+
+          Expanded(
+            child: CustomText(
+                value.isEmpty ? "N/A" : value,
+                style: TextStyle(
+                    fontFamily: "TomatoGrotesk",
+                    fontSize: App.screenHeight * 0.25 * 0.07,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.1,
+                    decoration: isClickable ? TextDecoration.underline : null,
+                    color: isClickable ? CustomColors.secondaryBlue : CustomColors.grey[5],
+                ),
+                textAlign: TextAlign.start,
+                maxLines: 5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SurveyResponseTwo extends StatelessWidget {
+  final User user;
+  final BoxConstraints constraints;
+  const _SurveyResponseTwo({Key? key, required this.constraints, required this.user}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+                Radius.circular(12)
+            )
+        ),
+        padding: EdgeInsets.symmetric(
+            horizontal: constraints.maxWidth * 0.025,
+            vertical: App.screenHeight * 0.03
+        ),
+        child: Column(
+          children: [
+            item(
+              title: "Recommendations to improve financing",
+              value: user.details["recommendations"] ?? "",
+            ),
+
+            SizedBox(height: App.screenHeight * 0.015),
+
+            item(
+              title: "Takeouts from panel session",
+              value: user.details["takeout"] ?? "",
+            ),
 
             SizedBox(height: App.screenHeight * 0.015),
 
@@ -594,6 +685,15 @@ class _SurveyResponse extends StatelessWidget {
   }
 
   Widget item({required String title, required String value, bool isClickable = false}) {
+
+    if(value.contains('/*OPTION*/')){
+      final fields = value.split('/*OPTION*/');
+      value = "";
+      for(String field in fields){
+        value = '$value${value.isEmpty ? "" : "\n"}$field';
+      }
+    }
+
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

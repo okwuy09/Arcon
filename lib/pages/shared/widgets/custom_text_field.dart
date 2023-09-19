@@ -32,6 +32,8 @@ class CustomTextField extends StatelessWidget {
     this.autofillHints = const <String>[],
     this.color,
     this.expands = true,
+    this.hideLabel = false,
+    this.hideError = false,
     this.onObscurityChange,
   })  : keyboardType = keyboardType ??
             (maxLines == 1 ? TextInputType.text : TextInputType.multiline),
@@ -248,6 +250,10 @@ class CustomTextField extends StatelessWidget {
   /// {@macro flutter.widgets.editableText.expands}
   final bool expands;
 
+  final bool hideLabel;
+
+  final bool hideError;
+
   ///Is triggered when the obscurity of a password TextField is changed
   final void Function(bool value)? onObscurityChange;
 
@@ -258,18 +264,20 @@ class CustomTextField extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: CustomText(
-              labelText ?? hintText ?? "No Label",
-              style: TextStyles(
-                color: CustomColors.grey[5],
-                letterSpacing: 0
-              ).textSubtitleLarge
+          if (!hideLabel)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: CustomText(
+                labelText ?? hintText ?? "No Label",
+                style: TextStyles(
+                  color: CustomColors.grey[5],
+                  letterSpacing: 0
+                ).textSubtitleLarge
+              ),
             ),
-          ),
 
-          SizedBox(height: height * 0.1),
+          if (!hideLabel)
+            SizedBox(height: height * 0.1),
 
           SizedBox(
             height: height,
@@ -368,7 +376,7 @@ class CustomTextField extends StatelessWidget {
             ),
           ),
 
-          if(errorText != null)
+          if(errorText != null && !hideError)
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 10,
