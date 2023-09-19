@@ -586,6 +586,8 @@ class _CertificateState extends State<Certificate> with TickerProviderStateMixin
         userEmail: controller.user.value.email,
       ).download();
       App.stopLoading();
+
+      Snack.show(message: "Your certificate is downloading...", type: SnackBarType.success);
     }
   }
 
